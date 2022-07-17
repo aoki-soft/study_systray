@@ -8,6 +8,7 @@ fn toggle_window_visible(window: &tauri::Window) {
         window.hide().unwrap();
       } else {
         window.show().unwrap();
+        window.set_focus().unwrap();
       }
     }
     Err(err) => {
@@ -22,15 +23,9 @@ fn main() {
   tauri::Builder::default()
     .on_system_tray_event(|app, event| match event {
       SystemTrayEvent::LeftClick {
-       position,
         ..
       } => {
         let window = app.get_window("main").unwrap();
-        let i32_position = tauri::PhysicalPosition::<i32> {
-          x: position.x as i32,
-          y: position.y as i32,
-        };
-        window.set_position(tauri::Position::Physical(i32_position)).unwrap();
         toggle_window_visible(&window);
       }
       _ => {}
